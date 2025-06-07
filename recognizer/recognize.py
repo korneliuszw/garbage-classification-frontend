@@ -1,4 +1,3 @@
-from time import sleep
 import traceback
 from flask import Flask, request, jsonify, Response
 from werkzeug.utils import secure_filename
@@ -6,11 +5,8 @@ import os
 import tempfile
 import shutil
 from ultralytics import YOLO
-import torch
 from PIL import Image
-import io
 import json
-from werkzeug.datastructures import Headers
 import uuid
 from flask_cors import CORS
 
@@ -20,7 +16,7 @@ CORS(app)
 # Initialize models
 print("Loading models...")
 detect = YOLO("recognizer/detect-model.pt")
-classify = YOLO("recognizer/classify-model.pt")
+classify = YOLO("recognizer/ddnU2LQ.pt")
 print("Models loaded successfully")
 
 # Configuration
@@ -28,6 +24,24 @@ ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'bmp', 'webp'}
 MAX_CONTENT_LENGTH = 16 * 1024 * 1024  # 16MB max file size
 
 app.config['MAX_CONTENT_LENGTH'] = MAX_CONTENT_LENGTH
+
+def auto_map(class_name):
+    class_name = class_name.lower()
+    for plastic in ["can", "plastic", "metal", "pop"]:
+        if plastic in class_name:
+            return "plastik i metal"
+    for paper in ["paper", "cardboard", "carton"]:
+        if paper in class_name:
+            return "papier"
+    for bio in ["food", "fruit", "biological"]:
+        if bio in class_name:
+            return "bio"
+    if "glass" in class_name:
+        return "szklo"
+    if "battery" in class_name:
+        return "odpady komunalne"
+    else:
+        return "zmieszane"
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -134,6 +148,7 @@ def recognize():
                         'id': f'full_image_{r_idx}',
                         'detected_class': 'full_image',
                         'classified_as': predicted_class,
+                        'verdict': auto_map(predicted_class),
                         'confidence': confidence,
                         'detection_confidence': 1.0,
                         'bbox': None,
@@ -155,7 +170,8 @@ def recognize():
                         # Crop the detected object
                         # cropped = image.crop((x1, y1, x2, y2))
                         print("xyxy", xyxy)
-                        cropped = image.crop((x1 - 50, y1 - 50, x2 + 50, y2 + 50))
+                        crop_margin = 200
+                        cropped = image.crop((x1 - crop_margin, y1 - crop_margin, x2 + crop_margin, y2 + crop_margin))
                         cropped_path = os.path.join(output_path, f"object_{r_idx}_{box_id}.webp")
                         cropped.save(cropped_path, 'WEBP')
                         
@@ -166,6 +182,7 @@ def recognize():
                             'id': f'object_{r_idx}_{box_id}',
                             'detected_class': detected_class,
                             'classified_as': predicted_class,
+                            'verdict': auto_map(predicted_class),
                             'confidence': classification_confidence,
                             'detection_confidence': detection_confidence,
                             'bbox': {
@@ -184,6 +201,7 @@ def recognize():
                 'id': f'object_full',
                 'detected_class': 'none',
                 'classified_as': predicted_class,
+                'verdict': auto_map(predicted_class),
                 'confidence': classification_confidence,
                 'detection_confident': 0,
                 'bbox': {},
