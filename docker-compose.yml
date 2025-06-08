@@ -1,5 +1,3 @@
-version: '3.7'
-
 services:
   traefik:
     image: traefik:v3.4
@@ -18,11 +16,11 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.front
+      args:
+        RECOGNITION_URL: http://recognition-api:5000
     volumes:
       - ./uploads:/app/uploads
     environment:
-      RECOGNITION_URL: http://recognition-api:5000
-    args:
       RECOGNITION_URL: http://recognition-api:5000
     labels:
       - "traefik.enable=true"
