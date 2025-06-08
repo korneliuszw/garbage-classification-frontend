@@ -40,9 +40,9 @@ export default function Home() {
           <input
             type="checkbox"
             checked={toggleFlag}
-            onClick={async e => {
-              // const checked = e.target.;
-              setToggleFlag(c => !c);
+            onChange={async e => {
+              const checked = e.target.checked;
+              setToggleFlag(checked);
             }}
           />
           <span className="slider"></span>
