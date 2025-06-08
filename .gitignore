@@ -40,7 +40,10 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-
-uploads/
+#python
+.idea/
 .venv/
+
+package-lock.json
+uploads/
 *.pt

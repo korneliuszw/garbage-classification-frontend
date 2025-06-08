@@ -7,6 +7,7 @@ export interface RecognitionResult {
     id: number;
     detectedClass: string;
     classifiedAs: string;
+    verdict: string;
     confidence: number;
     detectionConfidence: number;
     bbox: number[];
@@ -29,6 +30,7 @@ export interface RecognitionMetadata {
         id: number;
         detected_class: string;
         classified_as: string;
+        verdict: string;
         confidence: number;
         detection_confidence: number;
         bbox: number[];
@@ -118,6 +120,7 @@ async function parseRecognitionResponse(response: Response): Promise<Recognition
         id: result.id,
         detectedClass: result.detected_class,
         classifiedAs: result.classified_as,
+        verdict: result.verdict,
         confidence: result.confidence,
         detectionConfidence: result.detection_confidence,
         bbox: result.bbox,
@@ -265,10 +268,13 @@ function parseHeaders(headerText: string): { name: string | null, filename?: str
     return headers;
 }
 
-export async function processImage(blob: Blob): Promise<RecognitionResponse> {
+export async function processImage(blob: Blob, toggleFlag?: boolean): Promise<RecognitionResponse> {
     const file = new File([blob], "image.webp", {type: "image/webp"})
     const formData = new FormData()
     formData.append('file', file)
+    if (toggleFlag !== undefined) {
+        formData.append('toggle_flag', toggleFlag.toString())
+    }
     const response = await fetch(`${apiUrl}/recognize`, {
         method: "POST",
         body: formData
