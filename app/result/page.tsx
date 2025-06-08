@@ -41,8 +41,8 @@ export default function DetectionResult() {
     }
     return <main>{result?.results.map(s => (
         <section key={s.id} className="flex-col justify-items-center align-center">
-            <h2>Wykryto smiecia (detection): {s.detectedClass} ({s.detectionConfidence * 100}%)</h2>
-            <h1>Sklasyfikowano smiecia (classification): {s.classifiedAs} ({s.confidence * 100}%)</h1>
+            <h2>Wykryto smiecia (detection): {s.detectedClass} ({(s.detectionConfidence * 100).toFixed(2)}%)</h2>
+            <h1>Sklasyfikowano smiecia (classification): {s.classifiedAs} ({(s.confidence * 100).toFixed(2)}%)</h1>
             <h3>Wyrzuc do pojemnika na {s.verdict}</h3>
             <img src={s.getImageUrl() as string} />
             <select className="col-start-1 row-start-1 appearance-none bg-gray-50 dark:bg-gray-800 p-3 m-3" name={`valid-label-${s.id}`} defaultValue={s.classifiedAs}>
