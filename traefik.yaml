@@ -1,0 +1,18 @@
+entryPoints:
+  web:
+    address: ":80"
+  websecure:
+    address: ":443"
+
+providers:
+  docker: {}
+
+certificates:
+  stores:
+    default:
+      defaultCertificate:
+        certFile: /certs/selfsigned.crt
+        keyFile: /certs/selfsigned.key
+
+api:
+  dashboard: false

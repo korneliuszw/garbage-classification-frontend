@@ -1,7 +1,5 @@
 "use client"
 
-const apiUrl = "http://localhost:5000"
-
 // --- Types ---
 export interface RecognitionResult {
     id: number;
@@ -275,7 +273,7 @@ export async function processImage(blob: Blob, toggleFlag?: boolean): Promise<Re
     if (toggleFlag !== undefined) {
         formData.append('toggle_flag', toggleFlag.toString())
     }
-    const response = await fetch(`${apiUrl}/recognize`, {
+    const response = await fetch('/api/recognize', {
         method: "POST",
         body: formData
     })
