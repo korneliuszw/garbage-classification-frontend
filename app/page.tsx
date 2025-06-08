@@ -25,7 +25,7 @@ export default function Home() {
         setResult(e)
         router.push('/result')
       }).finally(() => setIsLoading(false))
-  }, [])
+  }, [toggleFlag])
 
   return (
     <div>
