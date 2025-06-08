@@ -17,6 +17,8 @@ CORS(app)
 print("Loading models...")
 detect = YOLO("recognizer/detect-model.pt")
 classify = YOLO("recognizer/classify-model.pt")
+if detect is None or classify is None:
+    raise RuntimeError("Failed to load detection or classification model")
 print("Models loaded successfully")
 
 # Configuration
@@ -119,14 +121,21 @@ def recognize():
         if file.filename == '':
             print()
             return jsonify({'error': 'No file selected'}), 400
-        
+        print(toggle_flag, "toggle")
+
         if not allowed_file(file.filename):
             print("lmao", file.filename)
             return jsonify({'error': 'File type not allowed'}), 400
         
+        upload_dir = os.path.join(os.getcwd(), "uploads")
+        if not os.path.exists(upload_dir):
+            os.makedirs(upload_dir)
+
+        
         # Create temporary directory
         with tempfile.TemporaryDirectory(delete=False) as temp_dir:
             # Save uploaded file
+            
             filename = secure_filename(file.filename)
             input_path = os.path.join(temp_dir, filename)
             file.save(input_path)
@@ -140,6 +149,7 @@ def recognize():
             print(input_path)
             # sleep(100)
             # Run detection
+            
             if (toggle_flag):
                 detection_results = detect(input_path)
                 
