@@ -143,19 +143,28 @@ def recognize():
             if toggle_flag:
                 detection_results = detect(input_path)
 
-                for r_idx, r in enumerate(detection_results):
-                    if r.boxes is None:
-                        # No objects detected, classify the whole image
-                        predicted_class, confidence = recognize_image(input_path)
+                if all(r.boxes is None or len(r.boxes) == 0 for r in detection_results):
+                    # No objects detected, classify the whole image
+                    predicted_class, confidence = recognize_image(input_path)
 
-                        # Copy original image to output
-                        full_image_path = os.path.join(output_path, f"full_image_{r_idx}.webp")
-                        image = Image.open(input_path)
-                        image.save(full_image_path, "WEBP")
+                    # Copy original image to output
+                    full_image_path = os.path.join(output_path, "full_image_0.webp")
+                    image = Image.open(input_path)
+                    image.save(full_image_path, "WEBP")
 
-                        results.append({"id": f"full_image_{r_idx}", "detected_class": "full_image", "classified_as": predicted_class, "verdict": auto_map(predicted_class), "confidence": confidence, "detection_confidence": 1.0, "bbox": None, "file_index": len(image_files)})
-                        image_files.append(full_image_path)
-                    else:
+                    results.append({
+                        "id": "full_image_0",
+                        "detected_class": "full_image",
+                        "classified_as": predicted_class,
+                        "verdict": auto_map(predicted_class),
+                        "confidence": confidence,
+                        "detection_confidence": 1.0,
+                        "bbox": None,
+                        "file_index": len(image_files)
+                    })
+                    image_files.append(full_image_path)
+                else:
+                    for r_idx, r in enumerate(detection_results):
                         # Objects detected, crop and classify each
                         image = Image.open(input_path)
 
