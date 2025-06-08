@@ -40,10 +40,7 @@ export default function Home() {
           <input
             type="checkbox"
             checked={toggleFlag}
-            onChange={async e => {
-              const checked = e.target.checked;
-              setToggleFlag(checked);
-            }}
+            onClick={() => setToggleFlag(c => !c)}
           />
           <span className="slider"></span>
           <span className="toggle-label">{toggleFlag ? " multiple objects" : " One object"}</span>
