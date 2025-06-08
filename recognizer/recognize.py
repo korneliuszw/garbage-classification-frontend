@@ -16,7 +16,7 @@ CORS(app)
 # Initialize models
 print("Loading models...")
 detect = YOLO("recognizer/detect-model.pt")
-classify = YOLO("recognizer/ddnU2LQ.pt")
+classify = YOLO("recognizer/classify-model.pt")
 print("Models loaded successfully")
 
 # Configuration

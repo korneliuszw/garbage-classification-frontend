@@ -1,0 +1,13 @@
+FROM python:3.12 as base
+
+FROM base as deps
+RUN apt-get update && apt-get install ffmpeg libsm6 libxext6  -y
+RUN mkdir -p /app/recognizer
+WORKDIR "/app"
+COPY recognizer/requirements.txt recognizer/requirements.txt
+RUN pip install -r recognizer/requirements.txt
+
+FROM deps as run
+COPY recognizer/* recognizer/
+EXPOSE 5000
+CMD ["python", "recognizer/recognize.py"]

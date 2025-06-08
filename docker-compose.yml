@@ -1,0 +1,35 @@
+version: '3.7'
+
+services:
+  traefik:
+    image: traefik:v3.4
+    command:
+      - --configFile=/etc/traefik/traefik.yaml
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./traefik.yaml:/etc/traefik/traefik.yaml:ro
+      - ./certs:/certs:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: always
+
+  detector-app:
+    build:
+      context: .
+      dockerfile: Dockerfile.front
+    volumes:
+      - ./uploads:/app/uploads
+    environment:
+      RECOGNITION_URL: http://recognition-api:5000
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.detector.rule=Host(`localhost`)"
+      - "traefik.http.routers.detector.entrypoints=websecure"
+      - "traefik.http.routers.detector.tls=true"
+      - "traefik.http.services.detector.loadbalancer.server.port=3000"
+  recognition-api:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    

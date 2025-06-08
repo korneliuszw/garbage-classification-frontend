@@ -10,7 +10,7 @@ export default function Home() {
   const camera = useRef<CameraType>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [toggleFlag, setToggleFlag] = useState(false);
-  const setResult = useResultStore((state: any) => state.setRecognition)
+  const setResult = useResultStore((state) => state.setRecognition)
   const router = useRouter()
   const takePhoto = useCallback(() => {
     const photo = camera.current?.takePhoto("imgData") as ImageData
@@ -19,12 +19,12 @@ export default function Home() {
     const canvas = new OffscreenCanvas(photo.width, photo.height)
     canvas.getContext('2d')!.putImageData(photo, 0, 0)
     canvas.convertToBlob({ type: "image/webp", quality: 0.95 })
-    .then(blob => processImage(blob, toggleFlag))
-    .then((e) => {
-      console.debug('done', e)
-      setResult(e)
-      router.push('/result')
-    }).finally(() => setIsLoading(false))
+      .then(blob => processImage(blob, toggleFlag))
+      .then((e) => {
+        console.debug('done', e)
+        setResult(e)
+        router.push('/result')
+      }).finally(() => setIsLoading(false))
   }, [])
 
   return (
