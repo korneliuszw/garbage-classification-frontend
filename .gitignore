@@ -42,7 +42,8 @@ next-env.d.ts
 
 #python
 .idea/
-
-uploads/
 .venv/
+
+package-lock.json
+uploads/
 *.pt

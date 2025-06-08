@@ -268,10 +268,13 @@ function parseHeaders(headerText: string): { name: string | null, filename?: str
     return headers;
 }
 
-export async function processImage(blob: Blob): Promise<RecognitionResponse> {
+export async function processImage(blob: Blob, toggleFlag?: boolean): Promise<RecognitionResponse> {
     const file = new File([blob], "image.webp", {type: "image/webp"})
     const formData = new FormData()
     formData.append('file', file)
+    if (toggleFlag !== undefined) {
+        formData.append('toggle_flag', toggleFlag.toString())
+    }
     const response = await fetch(`${apiUrl}/recognize`, {
         method: "POST",
         body: formData
