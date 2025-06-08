@@ -22,9 +22,11 @@ services:
       - ./uploads:/app/uploads
     environment:
       RECOGNITION_URL: http://recognition-api:5000
+    args:
+      RECOGNITION_URL: http://recognition-api:5000
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.detector.rule=Host(`localhost`)"
+      - "traefik.http.routers.detector.rule=PathPrefix(`/`)"
       - "traefik.http.routers.detector.entrypoints=websecure"
       - "traefik.http.routers.detector.tls=true"
       - "traefik.http.services.detector.loadbalancer.server.port=3000"
