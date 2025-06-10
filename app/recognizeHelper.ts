@@ -1,6 +1,14 @@
 "use client"
 
 // --- Types ---
+type Bbox = {
+            height: number,
+            width: number,
+            x1: number,
+            x2: number,
+            y1: number,
+            y2: number
+        } | Record<PropertyKey, never>;
 export interface RecognitionResult {
     id: number;
     detectedClass: string;
@@ -8,12 +16,13 @@ export interface RecognitionResult {
     verdict: string;
     confidence: number;
     detectionConfidence: number;
-    bbox: number[];
+    bbox: Bbox;
     image: ImageBlobInfo | null;
     getImageUrl(): string | null;
     downloadImage(): void;
     cleanup(): void;
 }
+
 
 export interface ImageBlobInfo {
     blob: Blob;
@@ -31,7 +40,7 @@ export interface RecognitionMetadata {
         verdict: string;
         confidence: number;
         detection_confidence: number;
-        bbox: number[];
+        bbox: Bbox
         file_index: number;
     }>;
 
