@@ -1,24 +1,22 @@
 "use client"
 import { useCallback, useRef, useState } from "react";
-import { Camera, CameraType } from "react-camera-pro";
 import { processImage } from "./recognizeHelper";
 import { useResultStore } from "./useResultStore";
 import { useRouter } from "next/navigation";
+import Webcam from "react-webcam";
 
 
 export default function Home() {
-  const camera = useRef<CameraType>(null)
+  const camera = useRef<Webcam>(null)
   const [isLoading, setIsLoading] = useState(false)
   const [toggleFlag, setToggleFlag] = useState(false);
   const setResult = useResultStore((state) => state.setRecognition)
   const router = useRouter()
   const takePhoto = useCallback(() => {
-    const photo = camera.current?.takePhoto("imgData") as ImageData
+    const photo = camera.current?.getScreenshot()
     if (!photo) return
     setIsLoading(true)
-    const canvas = new OffscreenCanvas(photo.width, photo.height)
-    canvas.getContext('2d')!.putImageData(photo, 0, 0)
-    canvas.convertToBlob({ type: "image/webp", quality: 0.95 })
+    fetch(photo).then(s => s.blob())
       .then(blob => processImage(blob, toggleFlag))
       .then((e) => {
         console.debug('done', e)
@@ -29,12 +27,7 @@ export default function Home() {
 
   return (
     <div>
-      <Camera ref={camera} facingMode="environment" errorMessages={{
-        noCameraAccessible: "Nie udalo sie otworzyc kamery",
-        permissionDenied: "Brak uprawnien do kamery",
-        switchCamera: "Zmiana kamery",
-        canvas: "Nie udalo sie utworzyc podgladu"
-      }} />
+      <Webcam className="w-screen h-screen object-cover" ref={camera} audio={false} screenshotFormat="image/webp" videoConstraints={{ width: 1440, height: 1080, facingMode: 'environment' }} imageSmoothing={false} forceScreenshotSourceSize={true} />
       <div className="fixed top-4 left-4 z-50 flex items-center gap-3 cursor-pointer select-none">
         <label className="relative flex items-center">
           <input
@@ -51,7 +44,7 @@ export default function Home() {
         </span>
       </div>
       <div className="fixed w-full flex justify-center p-2 bottom-4">
-        <button disabled={isLoading} className="w-36 bottom-4 rounded-full bg-blue-500 p-2" onClick={takePhoto}>{isLoading ? "Skanowanie..." : "Skanuj"}</button>
+        <button disabled={isLoading} className="w-36 bottom-4 rounded-full bg-blue-500 p-2" onClick={() => takePhoto()}>{isLoading ? "Skanowanie..." : "Skanuj"}</button>
       </div>
     </div>
   );
