@@ -96,8 +96,6 @@ export default function Home() {
         </div>
       )}
 
-      {/* Przełącznik trybu */}
-
 
       {/* Przyciski */}
       <div className="fixed w-full flex justify-center gap-4 p-2 bottom-4">
@@ -109,14 +107,16 @@ export default function Home() {
           {isLoading ? "Skanowanie..." : "Skanuj"}
         </button>
 
-        <input
-          type="file"
-          accept="image/jpeg, image/png"
-          disabled={isLoading}
-          onChange={handleFileUpload}
-          className="w-36 rounded-full bg-gray-500 p-2 file:text-white"
-          
-        />
+        <label className="w-36 rounded-full bg-gray-500 p-2 text-white flex items-center justify-center cursor-pointer">
+          Wybierz plik
+          <input
+            type="file"
+            accept="image/jpeg, image/png"
+            disabled={isLoading}
+            onChange={handleFileUpload}
+            className="hidden"
+          />
+        </label>
       </div>
     </div>    
   );

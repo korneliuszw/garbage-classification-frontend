@@ -1,6 +1,6 @@
 import type { NextConfig } from "next";
 
-const apiUrl = process.env.RECOGNITION_URL
+const apiUrl = process.env.RECOGNITION_URL;
 
 const nextConfig: NextConfig = {
   /* config options here */
