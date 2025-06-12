@@ -1,0 +1,2 @@
+recognizer/classify-model.pt filter=lfs diff=lfs merge=lfs -text
+recognizer/detect-model.pt filter=lfs diff=lfs merge=lfs -text
