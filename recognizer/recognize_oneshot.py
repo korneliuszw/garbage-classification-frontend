@@ -8,6 +8,8 @@ print("Starting...")
 
 detect = YOLO("recognizer/detect-model.pt")
 classify = YOLO("recognizer/classify-model.pt")
+if detect is None or classify is None:
+    raise RuntimeError("Failed to load detection or classification model")
 print("Model loaded")
 
 
