@@ -52,19 +52,24 @@ export const DetectionSingleResult = ({ result }: DetectionSingleResultProps) =>
         img.src = result.image?.url
     }
     return (
-        <section key={result.id} className="flex-col justify-items-center align-center p-1">
-            <h2>Wykryto smiecia (detection): {result.detectedClass} ({(result.detectionConfidence * 100).toFixed(2)}%)</h2>
-            <h1>Sklasyfikowano smiecia (classification): {result.classifiedAs} ({(result.confidence * 100).toFixed(2)}%)</h1>
-            <h3>Wyrzuc do pojemnika na {result.verdict}</h3>
+        <section key={result.id} className="flex flex-col justify-items-center align-center p-1 bg-neutral-200 dark:bg-neutral-800 m-1 rounded gap-1 snap-start">
+            <div className="flex gap-2 justify-self-start items-center">
+                <div className="bg-gray-600 p-2 pt-1 pb-1 rounded">Kosz</div>
+                <span>
+                    <b>{result.verdict}</b> ({(result.confidence * 100).toFixed(2)}%)
+                </span>
+            </div>
             {result.bbox?.width ? <canvas className="max-w-full max-h-full" ref={initializeCanvas} /> : <img src={result.getImageUrl() as string} />}
-            <select className="col-start-1 row-start-1 appearance-none bg-gray-50 dark:bg-gray-800 p-3 m-3" name={`valid-label-${result.id}`} defaultValue={result.classifiedAs}>
-                {classMap.map((val) => <option key={val} value={val} >{val}</option>)}
-            </select>
-            <button disabled={isLoading || submitted}
-                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                type="button"
-                onClick={() => handleSubmitValidLabel()}
-            >{submitted ? "Submitted" : isLoading ? "Sending..." : "Submit correct label"}</button>
+            <div className="flex items-center justify-center">
+                <select className="col-start-1 row-start-1 appearance-none bg-gray-50 dark:bg-gray-800 p-3" name={`valid-label-${result.id}`} defaultValue={result.classifiedAs}>
+                    {classMap.map((val) => <option key={val} value={val} >{val}</option>)}
+                </select>
+                <button disabled={isLoading || submitted}
+                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                    type="button"
+                    onClick={() => handleSubmitValidLabel()}
+                >{submitted ? "Submitted" : isLoading ? "Sending..." : "Submit correct label"}</button>
+            </div>
         </section>
     )
 
